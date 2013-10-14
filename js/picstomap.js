@@ -110,7 +110,7 @@ jQuery(document).ready(function( $ ) {
 
 	this.readyToLoadMap = function(numPics) {
 	    progressBar.hide();
-	    GeotaggedPicsToMap.dialogTitle.replace('0', numPics);
+	    mapDialog.dialog('option', 'title', GeotaggedPicsToMap.dialogTitle.replace('0', numPics));
 	    return mapHolder.get(0);
 	}
 	
@@ -273,7 +273,7 @@ jQuery(document).ready(function( $ ) {
 		return;
 	    }
 	    var container = This.mapWindow.readyToLoadMap(markers.length);
-	    //This.mapProvider.loadMap(container, markers);
+	    This.mapProvider.loadMap(container, markers);
 	}
 	
 	this.openMap = function() {
