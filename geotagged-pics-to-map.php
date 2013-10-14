@@ -96,7 +96,7 @@ class geotagged_pics_to_map {
 
   function add_scripts() {
     // $proto = ($_SERVER['HTTPS'] && $_SERVER['HTTPS']!="off") ? "https" : "http";
-    $jsDep = array("jquery", "jquery-ui-dialog", "jquery-ui-progressbar", "GoogleMapsAPIv3", "ExifReader");
+    $jsDep = array("jquery", "jquery-ui-dialog", "jquery-ui-progressbar", "GoogleMapsAPIv3", "ExifReader", "OverlappingMarkerSpiderfier");
     $noDep = array();
 
     if ( empty($this->googleMapsApiV3Key) )
@@ -104,7 +104,9 @@ class geotagged_pics_to_map {
     else
       $gmapScriptURL = "//maps.googleapis.com/maps/api/js?key=$this->googleMapsApiV3Key&sensor=false";
     
+    
     wp_enqueue_script("GoogleMapsAPIv3", $gmapScriptURL, $noDep);
+    wp_enqueue_script("OverlappingMarkerSpiderfier", plugins_url( "js/oms.min.js" , __FILE__ ), array("GoogleMapsAPIv3"), $this->version, false);
     wp_enqueue_script("ExifReader", plugins_url( "js/ExifReader.js" , __FILE__ ), $noDep, $this->version, false);
     wp_enqueue_script("geotagged_pics_to_map", plugins_url( "js/picstomap.js" , __FILE__ ), $jsDep, $this->version, false);
     

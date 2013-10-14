@@ -220,13 +220,19 @@ jQuery(document).ready(function( $ ) {
     
     var GoogleMaps = function() {
 	var map;
-
+	var oms;
+	
 	this.loadMap = function(mapHolderDiv, markers) {
             map = new google.maps.Map(mapHolderDiv, {
 		center: new google.maps.LatLng(markers[0].GPSLatitude, markers[0].GPSLongitude ),
 		zoom: 7,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
             });
+	    oms = new OverlappingMarkerSpiderfier(map, {markersWontMove: true, markersWontHide: true, nearbyDistance: 30} );
+
+	    oms.addListener('click', function(marker, event) {
+		marker.openWindow();
+	    });
 	    
 	    var bounds = new google.maps.LatLngBounds ();	
 	    for (var n = 0 ; n < markers.length ; n++){
@@ -236,11 +242,12 @@ jQuery(document).ready(function( $ ) {
 		    icon: {
 		    	url : markers[n].thumbnail,
 		    	scaledSize : new google.maps.Size(45,45)
-		    }
+		    },
+		    openWindow: markers[n].openWindow
 		});
 		bounds.extend(marker.position);
-		
-		google.maps.event.addListener(marker, 'click', markers[n].openWindow);
+		oms.addMarker(marker);
+		//google.maps.event.addListener(marker, 'click', markers[n].openWindow);
 	    }
 	    map.fitBounds(bounds);
 	}
