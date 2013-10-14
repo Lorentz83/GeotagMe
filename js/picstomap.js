@@ -1,6 +1,7 @@
 
 var GeotaggedPicsToMap = {
     dialogTitle : 'There are 0 pictures on the map',
+    dialogTitleProgress : 'Analyzing 0 pictures...',
     dialogLoading: 'Loading the pictures...',
     ajaxLoader : '/wp-content/plugins/geotagged-pics-to-map/img/ajax-loader.gif',
     sorry : 'Sorry, no pictures found :(' 
@@ -107,10 +108,9 @@ jQuery(document).ready(function( $ ) {
 	var mapHolder;
 	var progressBar;
 
-	this.hideProgressBar = function() {
+	this.readyToLoadMap = function(numPics) {
 	    progressBar.hide();
-	}
-	this.getMapContainer = function() {
+	    GeotaggedPicsToMap.dialogTitle.replace('0', numPics);
 	    return mapHolder.get(0);
 	}
 	
@@ -126,10 +126,11 @@ jQuery(document).ready(function( $ ) {
 	    progressBar.progressbar('option', 'disabled', false); 
 	    progressBar.progressbar('option', 'max', max);
 	    progressBar.progressbar('value', curr);
-	    mapDialog.dialog('option', 'title', GeotaggedPicsToMap.dialogTitle.replace('0', curr));
+	    mapDialog.dialog('option', 'title', GeotaggedPicsToMap.dialogTitleProgress.replace('0', curr));
 	}
 	
 	this.failToLoad = function() {
+	    mapDialog.dialog('option', 'title', GeotaggedPicsToMap.sorry);
 	    mapDialog.text(GeotaggedPicsToMap.sorry);
 	}
 
@@ -181,9 +182,13 @@ jQuery(document).ready(function( $ ) {
 	
 	this.readExif = function(url, callback) {
 	    This.binaryDownload(url, function(data){
-		var exif = new ExifReader();
-		exif.load(data);
-		var tags = exif.getAllTags();
+		var tags = null;
+		try {
+		    var exif = new ExifReader();
+		    exif.load(data);
+		    tags = exif.getAllTags();
+		}
+		catch(e) { /* no exif*/ }
 		callback(tags);
 	    });
 	}
@@ -208,9 +213,12 @@ jQuery(document).ready(function( $ ) {
 	    img.each(
 		function(index, imgUrl) { 
 		    This.readExif(this.image, This._waitingForPoints.createCallback(function(tags) {
-			if(tags !== null && tags['GPSLongitude'] && tags['GPSLatitude']){
+			if(tags !== null && !isNaN(tags['GPSLongitude'].description) && !isNaN(tags['GPSLatitude'].description) ){
 			    var point = new Marker(tags['GPSLatitude'].description, tags['GPSLongitude'].description, imgUrl.image, imgUrl.thumbnail);
 			    This.markers.push(point);
+			}
+			else {
+			    console.log('No exif for ' + imgUrl.image);
 			}
 		    }));
 		}
@@ -229,7 +237,6 @@ jQuery(document).ready(function( $ ) {
 		mapTypeId: google.maps.MapTypeId.ROADMAP
             });
 	    oms = new OverlappingMarkerSpiderfier(map, {markersWontMove: true, markersWontHide: true, nearbyDistance: 30} );
-
 	    oms.addListener('click', function(marker, event) {
 		marker.openWindow();
 	    });
@@ -247,7 +254,6 @@ jQuery(document).ready(function( $ ) {
 		});
 		bounds.extend(marker.position);
 		oms.addMarker(marker);
-		//google.maps.event.addListener(marker, 'click', markers[n].openWindow);
 	    }
 	    map.fitBounds(bounds);
 	}
@@ -261,13 +267,13 @@ jQuery(document).ready(function( $ ) {
 	this.loaded = false;
 
 	this.markersReady = function(event, markers) {
+	    console.log(markers);
 	    if (markers.length == 0) {
 		This.mapWindow.failToLoad();
 		return;
 	    }
-	    var container = This.mapWindow.getMapContainer();
-	    This.mapWindow.hideProgressBar();
-	    This.mapProvider.loadMap(container, markers);
+	    var container = This.mapWindow.readyToLoadMap(markers.length);
+	    //This.mapProvider.loadMap(container, markers);
 	}
 	
 	this.openMap = function() {
@@ -276,6 +282,7 @@ jQuery(document).ready(function( $ ) {
 		This.loaded = true;
 		This.picsAnalyzer.loadImages();
 	    }
+	    return false;
 	}
 	
 	//ctor
