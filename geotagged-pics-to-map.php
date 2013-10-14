@@ -15,7 +15,7 @@ class geotagged_pics_to_map {
   var $googleMapsApiV3Key;
   var $name = "Geotagged Pics to Map";
   var $id = "geotagged-pics-to-map";
-  var $googleMapsTag = "";
+  var $pics2mapTags = array();
 
   function geotagged_pics_to_map(){ //ctor
     add_shortcode( 'pics2map', array( &$this, 'shortcode' ) );
@@ -23,7 +23,7 @@ class geotagged_pics_to_map {
     add_action( 'admin_menu', array( &$this, 'custom_admin_menu' ) );
     
     $this->googleMapsApiV3Key = get_option("googleMapsApiV3Key");
-    $this->googleMapsTag = get_option("googleMapsTag");
+    $this->pics2mapTags = get_option("pics2mapTags");
 
     $plugin = plugin_basename(__FILE__); 
     add_filter("plugin_action_links_$plugin", array( &$this, 'add_link_to_settings' ) );
@@ -36,8 +36,12 @@ class geotagged_pics_to_map {
     if ( is_single() ) {
       global $post;
       $tags = wp_get_post_tags($post->ID, array( 'fields' => 'ids' ));
-      if ( in_array( $this->googleMapsTag, $tags ) )
-	$content .= '<p>'.$this->get_open_link().'</p>';
+      foreach ( $this->pics2mapTags as $toShow ) {
+	if ( in_array( $toShow, $tags ) ) {
+	  $content .= '<p>'.$this->get_open_link().'</p>';
+	  break;
+	}
+      }
     }
     return $content;
   }
@@ -62,9 +66,9 @@ class geotagged_pics_to_map {
       update_option( "googleMapsApiV3Key", $this->googleMapsApiV3Key );
       $updated = __("Changes saved.");
     }
-    if( isset($_POST["googleMapsTag"]) ){
-      $this->googleMapsTag = $_POST["googleMapsTag"];
-      update_option( "googleMapsTag", $this->googleMapsTag );
+    if( isset($_POST["pics2mapTags"]) ){
+      $this->pics2mapTags = $_POST["pics2mapTags"];
+      update_option( "pics2mapTags", $this->pics2mapTags );
       $updated = __("Changes saved.");
     }
     
@@ -82,10 +86,11 @@ class geotagged_pics_to_map {
     echo "</p>";
     echo "<h3>".__("Tag settings")."</h3>";
     echo "<p>";
-    echo '<label for="googleMapsTag">'.__("Automatically show a link to open the map at the bottom of the posts with this tag (leave empty to disable)")."</label><br/>";
-    echo '<select name="googleMapsTag" id ="googleMapsTag"><option value=""></option>';
+    echo '<label for="pics2mapTags">'.__("Automatically show a link to open the map at the bottom of the posts with these tags (hold ctrl for multiple select)")."</label> ";
+    echo '<a href="#" onclick="jQuery(\'#pics2mapTags\').val([]); return false">'.__("Clear selection").'</a><br/>';
+    echo '<select name="pics2mapTags[]" id ="pics2mapTags" multiple="true" size="10">';
     foreach ( get_tags() as $tag ) {
-      $selected = $this->googleMapsTag == $tag->term_id ? 'selected="selected"' : '';
+      $selected =  in_array( $tag->term_id, $this->pics2mapTags ) ? 'selected="selected"' : '';
       echo '<option '.$selected.' value="'.$tag->term_id.'">'.$tag->name.'</option>';
     }
     echo '</select>';
