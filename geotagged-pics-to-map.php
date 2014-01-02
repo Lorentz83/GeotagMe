@@ -38,7 +38,7 @@ class geotagged_pics_to_map {
       $tags = wp_get_post_tags($post->ID, array( 'fields' => 'ids' ));
       foreach ( $this->pics2mapTags as $toShow ) {
 	if ( in_array( $toShow, $tags ) ) {
-	  $content .= '<p>'.$this->get_open_link().'</p>';
+	  $content .= '<p style="clear:both">'.$this->get_open_link().'</p>';
 	  break;
 	}
       }
