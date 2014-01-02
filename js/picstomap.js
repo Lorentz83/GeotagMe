@@ -213,8 +213,16 @@ jQuery(document).ready(function( $ ) {
 	    img.each(
 		function(index, imgUrl) { 
 		    This.readExif(this.image, This._waitingForPoints.createCallback(function(tags) {
-			if(tags !== null && !isNaN(tags['GPSLongitude'].description) && !isNaN(tags['GPSLatitude'].description) ){
-			    var point = new Marker(tags['GPSLatitude'].description, tags['GPSLongitude'].description, imgUrl.image, imgUrl.thumbnail);
+			if(tags !== null && 
+			   !isNaN(tags['GPSLongitude'].description) && tags['GPSLongitudeRef'].description !== null &&
+			   !isNaN(tags['GPSLatitude'].description) && tags['GPSLatitudeRef'].description !== null
+			  ){
+			    console.log(tags['GPSLatitudeRef'])
+			    var latitude = tags['GPSLatitudeRef'].description.indexOf('N') === -1 ? -1 : 1;
+			    latitude *= tags['GPSLatitude'].description;
+			    var longitude = tags['GPSLongitudeRef'].description.indexOf('E') === -1 ? -1 : 1;
+			    longitude *= tags['GPSLongitude'].description;
+			    var point = new Marker(latitude, longitude, imgUrl.image, imgUrl.thumbnail);
 			    This.markers.push(point);
 			}
 			else {
