@@ -1020,7 +1020,9 @@
         0x0002: {
           'name': 'GPSLatitude',
           'description': function(value) {
-            return value[0] + value[1] / 60 + value[2] / 3600;
+	    var min = 0;
+	    if ( !isNaN(value[2]) ) min = value[2];
+            return value[0] + value[1] / 60 + min / 3600;
           }
         },
         0x0003: {
@@ -1039,7 +1041,9 @@
         0x0004: {
           'name': 'GPSLongitude',
           'description': function(value) {
-            return value[0] + value[1] / 60 + value[2] / 3600;
+	    var min = 0;
+	    if ( !isNaN(value[2]) ) min = value[2];
+            return value[0] + value[1] / 60 + min / 3600;
           }
         },
         0x0005: {
