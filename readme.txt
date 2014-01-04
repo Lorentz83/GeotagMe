@@ -1,3 +1,5 @@
+name : memapper
+
 === Plugin Name ===
 Contributors: lorentz83
 Tags: geotag, pictures, photos, map

@@ -244,7 +244,7 @@ jQuery(document).ready(function( $ ) {
 		zoom: 7,
 		mapTypeId: google.maps.MapTypeId.ROADMAP
             });
-	    oms = new OverlappingMarkerSpiderfier(map, {markersWontMove: true, markersWontHide: true, nearbyDistance: 30} );
+	    oms = new OverlappingMarkerSpiderfier(map, {markersWontMove: true, markersWontHide: true, nearbyDistance: 40, circleFootSeparation: 45} );
 	    oms.addListener('click', function(marker, event) {
 		marker.openWindow();
 	    });
