@@ -12,15 +12,16 @@ License: GPL2
 
 class GeotagMe {
   var $version = "0.1";
-  var $name = "GeotaggMe";
+  var $name = "GeotagMe";
   var $id = "geotagme";
+  var $shortcodeTag = "GeotagMe";
   
   // options
   var $googleMapsApiV3Key;
   var $geotagMeAutoenableOnTags;
 
   function GeotagMe(){ //ctor
-    add_shortcode( 'GeotagMe', array( &$this, 'shortcode' ) );
+    add_shortcode( $this->shortcodeTag, array( &$this, 'shortcode' ) );
     add_action( 'wp_enqueue_scripts', array( &$this, 'add_scripts' ) );
     add_action( 'admin_menu', array( &$this, 'custom_admin_menu' ) );
     
@@ -86,9 +87,15 @@ class GeotagMe {
     echo '<input type="text" value="'.$this->googleMapsApiV3Key.'" name="googleMapsApiV3Key" id="googleMapsApiV3Key" size="40" /> ';
     echo '(<a href="https://developers.google.com/maps/documentation/javascript/tutorial#api_key">'.__('How to obtain?').'</a>)';
     echo "</p>";
-    echo "<h3>".__("Tag settings")."</h3>";
+    echo "<h3>".__("Open map settings")."</h3>";
+    printf(__("<p>Write %s or %sLink text%s anywhere in a post to insert a link to open the map."), 
+	   "<code>[$this->shortcodeTag]</code>",
+	   "<code>[$this->shortcodeTag]",
+	   "[/$this->shortcodeTag]</code>");
     echo "<p>";
-    echo '<label for="geotagMeAutoenableOnTags">'.__("Automatically show a link to open the map at the bottom of the posts with these tags (hold ctrl for multiple select)")."</label> ";
+    echo '<label for="geotagMeAutoenableOnTags">'.
+      __("Automatically show a link to open the map at the bottom of the posts with these tags (hold ctrl for multiple selection)").
+      "</label> ";
     echo '<a href="#" onclick="jQuery(\'#geotagMeAutoenableOnTags\').val([]); return false">'.__("Clear selection").'</a><br/>';
     echo '<select name="geotagMeAutoenableOnTags[]" id ="geotagMeAutoenableOnTags" multiple="true" size="10">';
     foreach ( get_tags() as $tag ) {
