@@ -1,4 +1,4 @@
-name : memapper
+name : GeotagMe
 
 === Plugin Name ===
 Contributors: lorentz83
@@ -22,9 +22,21 @@ files.
 Note that the extraction of the metadata is made via javascript client
 side, so a newer browser is required to support the functionality.
 
+GeotagMe is free software: you can redistribute it and/or modify it
+under the terms of the GNU General Public License as published by the
+Free Software Foundation, either version 2 of the License, or (at your
+option) any later version.
+
+GeotagMe includes
+[OverlappingMarkerSpiderfier](https://github.com/jawj/OverlappingMarkerSpiderfier),
+[ExifReader](https://github.com/mattiasw/ExifReader) and 
+[jQuery UI](http://jqueryui.com/) as libraries. 
+They are released under GPL-compatible licenses, check
+their project websites to obtain more detailed information.
+
 == Installation ==
 
-1. Upload the directory `geotagged-pics-to-map` to the `/wp-content/plugins/` directory
+1. Upload the directory `geotagme` to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 1. Optionally, obtain a Google Maps Api V3 Key and save it in the
    option page
@@ -55,7 +67,7 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Changelog ==
 
-= 0.1 =
+= 0.1beta =
 * First release!
 
 == Upgrade Notice ==
