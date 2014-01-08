@@ -3,7 +3,7 @@ var GeotagMeTranslations = {
     dialogTitle : 'There are 0 pictures on the map',
     dialogTitleProgress : 'Analyzing 0 pictures...',
     dialogLoading: 'Loading the pictures...',
-    ajaxLoader : '/wp-content/plugins/geotagged-pics-to-map/img/ajax-loader.gif',
+    ajaxLoader : '/wp-content/plugins/geotagme/img/ajax-loader.gif',
     sorry : 'Sorry, no pictures found :(' 
 };
 

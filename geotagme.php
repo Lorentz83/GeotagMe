@@ -20,7 +20,7 @@ class GeotagMe {
   var $geotagMeAutoenableOnTags;
 
   function GeotagMe(){ //ctor
-    add_shortcode( 'geotagMe', array( &$this, 'shortcode' ) );
+    add_shortcode( 'GeotagMe', array( &$this, 'shortcode' ) );
     add_action( 'wp_enqueue_scripts', array( &$this, 'add_scripts' ) );
     add_action( 'admin_menu', array( &$this, 'custom_admin_menu' ) );
     
@@ -119,8 +119,8 @@ class GeotagMe {
     wp_enqueue_style("jquery-style", plugins_url( 'style/jquery-ui-1.10.3.custom.min.css' , __FILE__ ), array(), $this->version ); 
   }
 
-  function shortcode( $atts, $content = null ) {
-    return get_open_link($content);
+  function shortcode( $atts, $content) {
+    return $this->get_open_link($content);
   }
 
   function get_open_link($content = null){
