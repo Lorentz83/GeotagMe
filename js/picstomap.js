@@ -1,5 +1,5 @@
 
-var GeotaggedPicsToMap = {
+var GeotagMeTranslations = {
     dialogTitle : 'There are 0 pictures on the map',
     dialogTitleProgress : 'Analyzing 0 pictures...',
     dialogLoading: 'Loading the pictures...',
@@ -51,7 +51,7 @@ jQuery(document).ready(function( $ ) {
 	}
 
 	this._initAndOpen = function() {
-	    This.container = $('<div style="overflow:hidden; background:url('+GeotaggedPicsToMap.ajaxLoader+') no-repeat center" class="picstomapImage"></div>')
+	    This.container = $('<div style="overflow:hidden; background:url('+GeotagMeTranslations.ajaxLoader+') no-repeat center" class="GeptagMeImage"></div>')
 	    This.image = $('<img style="visibility: hidden" alt=""/>');
 	    This.image.attr('src', src);
 	    This.image.css('max-width', $(window).width()-30 );
@@ -110,7 +110,7 @@ jQuery(document).ready(function( $ ) {
 
 	this.readyToLoadMap = function(numPics) {
 	    progressBar.hide();
-	    mapDialog.dialog('option', 'title', GeotaggedPicsToMap.dialogTitle.replace('0', numPics));
+	    mapDialog.dialog('option', 'title', GeotagMeTranslations.dialogTitle.replace('0', numPics));
 	    return mapHolder.get(0);
 	}
 	
@@ -126,20 +126,20 @@ jQuery(document).ready(function( $ ) {
 	    progressBar.progressbar('option', 'disabled', false); 
 	    progressBar.progressbar('option', 'max', max);
 	    progressBar.progressbar('value', curr);
-	    mapDialog.dialog('option', 'title', GeotaggedPicsToMap.dialogTitleProgress.replace('0', curr));
+	    mapDialog.dialog('option', 'title', GeotagMeTranslations.dialogTitleProgress.replace('0', curr));
 	}
 	
 	this.failToLoad = function() {
-	    mapDialog.dialog('option', 'title', GeotaggedPicsToMap.sorry);
-	    mapDialog.text(GeotaggedPicsToMap.sorry);
+	    mapDialog.dialog('option', 'title', GeotagMeTranslations.sorry);
+	    mapDialog.text(GeotagMeTranslations.sorry);
 	}
 
 	//ctor
-	mapDialog = $('<div class="picstomap"></div>');
-	progressBar = $('<div class="picstomapPB" style="left: 2em; position: absolute; right: 2em; top: 2em;"/>');
+	mapDialog = $('<div class="GeptagMe"></div>');
+	progressBar = $('<div class="GeptagMePB" style="left: 2em; position: absolute; right: 2em; top: 2em;"/>');
 	progressBar.progressbar( { disabled: true } );
 
-	mapHolder = $('<div class="picstomapMH" style="height: 100%; width: 100%;"/>');
+	mapHolder = $('<div class="GeptagMeMapHolder" style="height: 100%; width: 100%;"/>');
 	mapDialog.append(mapHolder);
 	mapDialog.append(progressBar);
 	mapDialog.dialog({ 
@@ -148,7 +148,7 @@ jQuery(document).ready(function( $ ) {
 	    resizable: false,
 	    autoOpen: false,
 	    position: 'center',
-	    title: GeotaggedPicsToMap.dialogLoading,
+	    title: GeotagMeTranslations.dialogLoading,
 	    width: $(window).width() * 0.8,
 	    height: $(window).height() * 0.8
 	});
@@ -267,7 +267,7 @@ jQuery(document).ready(function( $ ) {
 	}
     }
     
-    var PicsToMap = function(mapProvider) {
+    var GeotagMe = function(mapProvider) {
 	var This = this;
 	this.mapProvider = mapProvider;
 	this.picsAnalyzer = new PicsAnalyzer();
@@ -299,8 +299,8 @@ jQuery(document).ready(function( $ ) {
     }
     
 
-    var picsToMap = new PicsToMap( new GoogleMaps() );
+    var geotagMe = new GeotagMe( new GoogleMaps() );
 
-    $('.geotagged_pics_open_map').click(picsToMap.openMap);
+    $('.GeotagMe_open_map').click(geotagMe.openMap);
 
 })
