@@ -80,7 +80,6 @@ jQuery(document).ready(function( $ ) {
 		resizable : false,
 		draggable : false,
 		modal : true,
-		position: 'center',
 		height : 70,
 		width : '70px',
 		dialogClass : "no-title",
@@ -90,12 +89,12 @@ jQuery(document).ready(function( $ ) {
 	    });
 	    This.container.click( This.close );
 	    jQuery(window).scroll(function() {
-		This.container.dialog('option','position','center');
+		This.container.dialog('option','position', { my: "center", at: "center", of: window } );
 	    });
 	    jQuery(window).resize(function() {
 		This.image.css('max-width', $(window).width()-30 );
 		This.image.css('max-height', $(window).height()-30 );
-		This.container.dialog('option','position','center');
+		This.container.dialog('option','position', { my: "center", at: "center", of: window } );
 	    });
 	    This.image.on('load', function(){
 		This.image.css('visibility', 'visible');
@@ -166,7 +165,6 @@ jQuery(document).ready(function( $ ) {
 	    draggable: false,
 	    resizable: false,
 	    autoOpen: false,
-	    position: 'center',
 	    title: GeotagMeTranslations.dialogLoading,
 	    width: $(window).width() * 0.8,
 	    height: $(window).height() * 0.8
@@ -177,9 +175,9 @@ jQuery(document).ready(function( $ ) {
 	    mapDialog.dialog("option", "height", $(window).height() * 0.8);
 	});
 	jQuery(window).scroll(function() {
-	    mapDialog.dialog('option','position','center');    
-	});
-    }
+	    mapDialog.dialog('option','position', { my: "center", at: "center", of: window } ); 
+	}); 
+   }
     
     var PicsAnalyzer = function() {
 	var This = this;

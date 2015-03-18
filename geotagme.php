@@ -3,7 +3,7 @@
 Plugin Name: GeotagMe
 Plugin URI: https://github.com/Lorentz83/GeotagMe
 Description: GeotagMe extracts geotag metadata from the pictures in a page and uses them to show the pictures in an interactive map
-Version: 0.1
+Version: 0.2
 Author: Lorenzo Bossi
 Author URI: http://profiles.wordpress.org/lorentz83
 License: GPL2 or later
@@ -39,9 +39,12 @@ class GeotagMe {
   var $googleMapsApiV3Key;
   var $geotagMeAutoenableOnTags;
 
+  static $used = false;
+  
   function GeotagMe(){ //ctor
     add_shortcode( $this->shortcodeTag, array( &$this, 'shortcode' ) );
-    add_action( 'wp_enqueue_scripts', array( &$this, 'add_scripts' ) );
+    add_action( 'init', array( &$this, 'register_scripts' ) );
+    add_action('wp_footer', array( &$this, 'add_scripts') );
     add_action( 'admin_menu', array( &$this, 'custom_admin_menu' ) );
     
     $this->googleMapsApiV3Key = get_option("googleMapsApiV3Key", "");
@@ -51,21 +54,26 @@ class GeotagMe {
     add_filter("plugin_action_links_$plugin", array( &$this, 'add_link_to_settings' ) );
 
     add_action('the_content', array( &$this, 'add_in_post_with_tag' ) );
-
   }
 
-  function add_in_post_with_tag($content) {
-    if ( is_single() ) {
-      global $post;
-      $tags = wp_get_post_tags($post->ID, array( 'fields' => 'ids' ));
-      foreach ( $this->geotagMeAutoenableOnTags as $toShow ) {
-	if ( in_array( $toShow, $tags ) ) {
-	  $content .= '<p style="clear:both">'.$this->get_open_link().'</p>';
-	  break;
-	}
+  function add_scripts() {
+      if ( self::$used ) {
+          wp_print_scripts('GeotagMe');
       }
-    }
-    return $content;
+  }
+  function add_in_post_with_tag($content) {
+      if ( is_single() ) {
+          global $post;
+          $tags = wp_get_post_tags($post->ID, array( 'fields' => 'ids' ));
+          foreach ( $this->geotagMeAutoenableOnTags as $toShow ) {
+              if ( in_array( $toShow, $tags ) ) {
+                  $content .= '<p style="clear:both">'.$this->get_open_link().'</p>';
+                  self::$used = true;
+                  break;
+              }
+          }
+      }
+      return $content;
   }
 
   function add_link_to_settings($links) { 
@@ -127,7 +135,7 @@ class GeotagMe {
     echo '</form>';
   }
 
-  function add_scripts() {
+  function register_scripts() {
     $jsDep = array("jquery", "jquery-ui-dialog", "jquery-ui-progressbar", "GoogleMapsAPIv3", "ExifReader", "OverlappingMarkerSpiderfier");
     $noDep = array();
 
@@ -137,15 +145,16 @@ class GeotagMe {
       $gmapScriptURL = "//maps.googleapis.com/maps/api/js?key=$this->googleMapsApiV3Key&sensor=false";
     
     
-    wp_enqueue_script("GoogleMapsAPIv3", $gmapScriptURL, $noDep);
-    wp_enqueue_script("OverlappingMarkerSpiderfier", plugins_url( "js/oms.min.js" , __FILE__ ), array("GoogleMapsAPIv3"), $this->version, false);
-    wp_enqueue_script("ExifReader", plugins_url( "js/ExifReader.js" , __FILE__ ), $noDep, $this->version, false);
-    wp_enqueue_script("GeotagMe", plugins_url( "js/picstomap.js" , __FILE__ ), $jsDep, $this->version, false);
+    wp_register_script("GoogleMapsAPIv3", $gmapScriptURL, $noDep, true);
+    wp_register_script("OverlappingMarkerSpiderfier", plugins_url( "js/oms.min.js" , __FILE__ ), array("GoogleMapsAPIv3"), $this->version, true);
+    wp_register_script("ExifReader", plugins_url( "js/ExifReader.js" , __FILE__ ), $noDep, $this->version, true);
+    wp_register_script("GeotagMe", plugins_url( "js/picstomap.js" , __FILE__ ), $jsDep, $this->version, true);
     
     wp_enqueue_style("jquery-style", plugins_url( 'style/jquery-ui-1.10.3.custom.min.css' , __FILE__ ), array(), $this->version ); 
   }
 
   function shortcode( $atts, $content) {
+    self::$used = true;
     return $this->get_open_link($content);
   }
 

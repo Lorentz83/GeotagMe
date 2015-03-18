@@ -67,6 +67,9 @@ directory take precedence. For example, `/assets/screenshot-1.png` would win ove
 
 == Changelog ==
 
+= 0.2 =
+* Optimization: the scripts are loaded only when required
+
 = 0.1beta =
 * First release!
 
