@@ -230,7 +230,7 @@ jQuery(document).ready(function( $ ) {
 	    img.each(
 		function(index, imgUrl) { 
 		    This.readExif(this.image, This._waitingForPoints.createCallback(function(tags) {
-			if(tags !== null && 
+			if(tags !== null && ( typeof tags['GPSLongitude'] != 'undefined' ) && ( typeof tags['GPSLongitude'] != 'undefined' ) &&
 			   !isNaN(tags['GPSLongitude'].description) && tags['GPSLongitudeRef'].description !== null &&
 			   !isNaN(tags['GPSLatitude'].description) && tags['GPSLatitudeRef'].description !== null
 			  ){
